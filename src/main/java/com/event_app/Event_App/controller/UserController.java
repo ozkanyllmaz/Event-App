@@ -58,4 +58,46 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Kullanıcı adı veya şifre hatalı");
         }
     }
+
+    // Backend (Spring Boot örneği)
+    @GetMapping("/users/profile")
+    public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String username) {
+        User user = userService.getUserByUsername(username);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(user);
+    }
+
+
+
+
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<User> getUserProfileById(@PathVariable Long userId) {
+        User user = userService.getOneUser(userId);
+        if (user != null) {
+            return ResponseEntity.ok(user);  // Kullanıcı bulundu, bilgilerini döndürüyoruz
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);  // Kullanıcı bulunamadı
+        }
+    }
+
+
+    @PutMapping("/profile/{userId}")
+    public User updateUserProfile(@PathVariable Long userId, @RequestBody User updatedProfile) {
+        return userService.updateUserProfile(userId, updatedProfile);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

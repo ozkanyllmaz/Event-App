@@ -2,8 +2,11 @@ package com.event_app.Event_App.service;
 
 import com.event_app.Event_App.entity.User;
 import com.event_app.Event_App.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,6 +74,36 @@ public class UserService {
         }
         return null;  // Kullanıcı adı bulunamadı
     }
+
+    // Kullanıcının kullanıcı adına göre bilgilerini dönen servis metodu
+    public User getUserByUsername(String username) {
+        return userRepository.findByUserName(username).orElse(null);
+    }
+
+    @Transactional
+    public User updateUserProfile(Long userId, User updatedProfile) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            user.setUserName(updatedProfile.getUserName());
+            user.setProfilePhoto(updatedProfile.getProfilePhoto());
+            user.setEmail(updatedProfile.getEmail());
+            user.setLocation(updatedProfile.getLocation());
+            user.setBirthDate(updatedProfile.getBirthDate());
+            user.setFirstName(updatedProfile.getFirstName());
+            user.setLastName(updatedProfile.getLastName());
+
+            // Güncellenmiş veriyi kaydediyoruz
+            return userRepository.save(user);
+        } else {
+            return null;  // Kullanıcı bulunamadıysa null döner
+        }
+    }
+
+
+
+
 
 
 
