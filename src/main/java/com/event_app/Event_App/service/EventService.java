@@ -52,4 +52,8 @@ public class EventService {
     public void deleteOneEventById(Long eventId) {
         eventRepository.deleteById(eventId);
     }
+
+    public Event getEventDetails(Long id) {
+        return eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found"));
+    }
 }

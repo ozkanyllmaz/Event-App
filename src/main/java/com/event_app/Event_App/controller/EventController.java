@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/events")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://localhost:3000")
 @Data
 public class EventController {
     private EventService eventService;
@@ -42,6 +42,11 @@ public class EventController {
     @DeleteMapping("/{eventId}")
     public void deleteOneEvent(@PathVariable Long eventId) {
         eventService.deleteOneEventById(eventId);
+    }
+
+    @GetMapping("/events/{eventId}")
+    public Event getEventDetails(@PathVariable Long id) {
+        return eventService.getEventDetails(id);
     }
 
 

@@ -93,6 +93,7 @@ public class UserService {
             user.setBirthDate(updatedProfile.getBirthDate());
             user.setFirstName(updatedProfile.getFirstName());
             user.setLastName(updatedProfile.getLastName());
+            user.setPassword(updatedProfile.getPassword());
 
             // Güncellenmiş veriyi kaydediyoruz
             return userRepository.save(user);
