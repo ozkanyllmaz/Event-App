@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 public class Message {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)

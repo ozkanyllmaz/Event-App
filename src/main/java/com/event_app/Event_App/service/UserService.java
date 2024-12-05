@@ -102,10 +102,13 @@ public class UserService {
         }
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
 
 
-
-
-
-
+    public User findById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        return user.orElse(null); // Kullanıcı bulunamazsa null döner
+    }
 }

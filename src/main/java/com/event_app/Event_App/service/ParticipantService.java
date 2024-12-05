@@ -17,7 +17,7 @@ public class ParticipantService {
 
     // Tüm katılımcıları al
     public List<Participant> getAllParticipants(Optional<Long> userId, Optional<Long> eventId) {
-        if(userId.isPresent() && eventId.isPresent()){
+        if (userId.isPresent() && eventId.isPresent()) {
             return participantRepository.findByUserIdAndEventId(userId.get(), eventId.get());
         } else if (userId.isPresent()) {
             return participantRepository.findByUserId(userId.get());
@@ -29,6 +29,7 @@ public class ParticipantService {
 
     // Katılımcıyı oluştur
     public Participant createParticipant(Participant participant) {
+        // Katılımcı oluşturuluyor ve kaydediliyor
         return participantRepository.save(participant);
     }
 
@@ -45,9 +46,8 @@ public class ParticipantService {
             foundParticipant.setUser(newParticipant.getUser());
             foundParticipant.setEvent(newParticipant.getEvent());
             return participantRepository.save(foundParticipant);
-        } else {
-            return null;
         }
+        return null;  // Katılımcı bulunmazsa null döndür
     }
 
     // Katılımcıyı sil

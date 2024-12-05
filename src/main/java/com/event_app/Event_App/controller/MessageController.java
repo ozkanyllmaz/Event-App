@@ -2,6 +2,8 @@ package com.event_app.Event_App.controller;
 
 import com.event_app.Event_App.entity.Message;
 import com.event_app.Event_App.service.MessageService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,4 +48,6 @@ public class MessageController {
     public void deleteMessage(@PathVariable Long messageId) {
         messageService.deleteMessage(messageId);
     }
+
+
 }

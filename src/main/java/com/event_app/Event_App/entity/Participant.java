@@ -11,6 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Participant {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     // User ID (foreign key)
 

@@ -1,5 +1,6 @@
 package com.event_app.Event_App.controller;
 
+import com.event_app.Event_App.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,16 +10,20 @@ import lombok.Data;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @CrossOrigin(origins = "http://localhost:3000")  // Frontend portuna izin veriyoruz
 @RestController
 @RequestMapping("/users")
 @Data
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
+    private final EmailService emailService; // EmailService alanı
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService; // EmailService enjekte ediliyor
     }
 
     @GetMapping
@@ -83,6 +88,7 @@ public class UserController {
     }
 
 
+
     @PutMapping("/profile/{userId}")
     public User updateUserProfile(@PathVariable Long userId, @RequestBody User updatedProfile) {
         return userService.updateUserProfile(userId, updatedProfile);
@@ -90,10 +96,43 @@ public class UserController {
 
 
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> emailRequest) {
+        String email = emailRequest.get("email");
+        User user = userService.getUserByEmail(email);
+
+        if (user == null) {
+            // Kullanıcı bulunamazsa hata mesajını JSON olarak gönderiyoruz
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Email not found"));
+        }
+
+        String newPassword = generateRandomCode(4);
+        user.setPassword(newPassword); // Şifreyi doğrudan set et (şifreleme eklenecekse bcrypt kullanın)
+        userService.saveOneUser(user);
+
+        // Mail gönderimi
+        try {
+            emailService.sendSimpleMessage(
+                    email,
+                    "Password Reset",
+                    "Your new password is: " + newPassword
+            );
+        } catch (Exception e) {
+            // E-posta gönderiminde bir hata oluşursa, JSON formatında hata mesajı dönüyoruz
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Email sending failed"));
+        }
+
+        return ResponseEntity.ok("Password reset email sent");
+    }
 
 
-
-
+    // 4 Haneli Şifre Üretme Metodu
+    private String generateRandomCode(int length) {
+        Random random = new Random();
+        return String.format("%0" + length + "d", random.nextInt((int) Math.pow(10, length)));
+    }
 
 
 
